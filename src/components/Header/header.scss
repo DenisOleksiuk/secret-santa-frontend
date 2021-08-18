@@ -1,0 +1,19 @@
+.header {
+  height: 50px;
+  background-color: white;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  background-color: rgba(255, 255, 255, 0.5);
+
+  &__item {
+    margin-right: 15px;
+    padding: 5px;
+  }
+
+  &__link {
+    color: black;
+    text-decoration: none;
+  }
+}

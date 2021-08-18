@@ -1,0 +1,26 @@
+.form__group {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+  margin-top: 15px;
+  width: calc(50% - 10px) !important;
+  margin-left: 10px;
+  &:nth-of-type(1),
+  &:nth-of-type(2) {
+    margin-top: 0px;
+  }
+}
+
+.add-form {
+  cursor: pointer;
+  display: block;
+  margin: auto;
+}
+
+.forms-wrapper {
+  width: 100%;
+  overflow-y: auto;
+  height: 300px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
