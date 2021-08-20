@@ -4,14 +4,19 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser, fetchCurrentUserAsync } from '../../store/authSlice';
 import Header from '../Header/Header';
-import Login from '../Login/Login';
-import Signup from '../Signup/Signup';
-import Dashboard from '../Dashboard/Dashboard';
+import Login from '../../pages/Login/Login';
+import Signup from '../../pages/Signup/Signup';
+import Dashboard from '../../pages/Dashboard/Dashboard';
+import Invite from '../../pages/Invite/Invite';
+import UserProfile from '../../pages/UserProfile/UserProfile';
+import { selectInviteUserName } from '../../store/invitedDataSlice';
 
 const App = () => {
-  const { isLoading } = useSelector(selectUser);
+  const { isLoading, error } = useSelector(selectUser);
+  const inviteUserName = useSelector(selectInviteUserName);
   const dispatch = useDispatch();
   const isToken = window.localStorage.getItem('userData');
+  console.log(inviteUserName);
 
   useEffect(() => {
     dispatch(fetchCurrentUserAsync());
@@ -27,7 +32,7 @@ const App = () => {
       <Container>
         <Switch>
           <Route exact path="/">
-            {isToken ? <Redirect to="/dashboard" /> : <Redirect to="/login" />}
+            {isToken && !error ? <Redirect to="/dashboard" /> : <Redirect to="/login" />}
           </Route>
           <Route exact path="/login">
             <Login />
@@ -37,6 +42,12 @@ const App = () => {
           </Route>
           <Route exact path="/dashboard">
             <Dashboard />
+          </Route>
+          <Route exact path="/invite">
+            <Invite />
+          </Route>
+          <Route exact path="/profile">
+            <UserProfile inviteUserName={inviteUserName} />
           </Route>
         </Switch>
       </Container>

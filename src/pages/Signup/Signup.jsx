@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import { Col, Row, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -13,10 +13,6 @@ const schema = yup.object().shape({
   password: yup
     .string()
     .min(8, 'Password is too short - should be 8 chars minimum.')
-    .matches(
-      /[a-zA-Z 0-9]/,
-      'Password can only contain Latin letters numbers and characters.'
-    )
     .required('No password provided.'),
 });
 
@@ -27,7 +23,7 @@ const Signup = () => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
   const history = useHistory();
-  const errorRef = useRef();
+  const [error, setError] = useState(null);
 
   const onSubmit = async (data) => {
     try {
@@ -35,7 +31,7 @@ const Signup = () => {
       window.localStorage.setItem('userData', user.data.token);
       history.push('/dashboard');
     } catch (error) {
-      errorRef.current = error.message;
+      setError(error.message);
     }
   };
 
@@ -51,7 +47,7 @@ const Signup = () => {
               placeholder="Enter your email"
               {...register('email')}
             />
-            <p>{errors.email?.message || errorRef.current}</p>
+            <p>{errors.email?.message}</p>
           </FormGroup>
         </Col>
       </Row>
@@ -83,6 +79,7 @@ const Signup = () => {
           </FormGroup>
         </Col>
       </Row>
+      <p>{error}</p>
 
       <Button className="w-25" color="primary">
         Submit

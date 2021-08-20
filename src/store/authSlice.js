@@ -4,7 +4,7 @@ import { authApi } from '../services/authApi';
 const initialState = {
   user: null,
   isLoading: true,
-  isLoginError: false,
+  error: false,
 };
 
 export const loginAsync = createAsyncThunk('auth/login', async ({ email, password }) => {
@@ -15,8 +15,11 @@ export const loginAsync = createAsyncThunk('auth/login', async ({ email, passwor
 export const fetchCurrentUserAsync = createAsyncThunk(
   'auth/fetchCurrentUser',
   async () => {
-    const response = await authApi.getCurrentUser();
-    return response.data;
+    try {
+      return await authApi.getCurrentUser();
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 );
 
@@ -39,7 +42,7 @@ export const authSlice = createSlice({
         state.isError = false;
         state.user = action.payload.user;
       })
-      .addCase(loginAsync.rejected, (state, action) => {
+      .addCase(loginAsync.rejected, (state) => {
         state.isLoading = false;
         state.isLoginError = true;
       })
@@ -48,6 +51,7 @@ export const authSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(fetchCurrentUserAsync.rejected, (state, action) => {
+        state.error = action.error.message;
         state.isLoading = false;
       });
   },

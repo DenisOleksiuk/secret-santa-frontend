@@ -2,17 +2,39 @@ import React, { useState } from 'react';
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import { Plus } from 'react-feather';
 import { useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 import authHelper from '../../services/authHelper';
 import './dashboard.scss';
+import { selectUser } from '../../store/authSlice';
 
 function Dashboard() {
   const { register, handleSubmit } = useForm();
+  const { user } = useSelector(selectUser);
   const [forms, setForms] = useState([{ email: 'Email', name: 'Name', id: 0 }]);
 
-  const onSubmit = async (data) => {
+  const ConvertObjectToArray = (obj) => {
+    const arrayOfFriends = [];
+    Object.values(obj).forEach((_, i) => {
+      if (obj[`email-${i}`]) {
+        arrayOfFriends.push({
+          email: obj[`email-${i}`],
+          name: obj[`name-${i}`],
+        });
+      }
+    });
+    return arrayOfFriends;
+  };
+
+  const onSubmit = (data) => {
+    if (Object.values(data).includes(undefined) || Object.values(data).includes('')) {
+      return alert('Seems like you have empty fields');
+    }
     console.log(data);
-    const user = await authHelper.post('/users/send', data);
-    console.log(user);
+    const arrayOfFriends = ConvertObjectToArray(data);
+    const owner = Object.assign({}, user);
+    delete owner.age;
+    arrayOfFriends.push({ owner });
+    authHelper.post('/users/send', arrayOfFriends);
   };
 
   const addFormGroup = () => {
@@ -30,14 +52,14 @@ function Dashboard() {
           type="email"
           name="email"
           placeholder="Enter your friend's email"
-          {...register(`email-${item.id}`, { required: true })}
+          {...register(`email-${item.id}`)}
         />
         <Label className="form__label">{item.name}</Label>
         <Input
           type="text"
           name="name"
           placeholder="Enter your friend's name"
-          {...register(`name-${item.id}`, { required: true })}
+          {...register(`name-${item.id}`)}
         />
       </FormGroup>
     ));
@@ -47,7 +69,15 @@ function Dashboard() {
     <>
       <Plus className="add-form" size={48} color="white" onClick={addFormGroup} />
       <Form className="form" onSubmit={handleSubmit(onSubmit)}>
-        <div className="forms-wrapper">{renderItems()}</div>
+        <div className="forms-wrapper">
+          <FormGroup className="form__group">
+            <Label className="form__label">Owner email</Label>
+            <Input disabled type="email" name="email" placeholder={user?.email} />
+            <Label className="form__label">Owner name</Label>
+            <Input disabled type="text" name="name" placeholder={user?.name} />
+          </FormGroup>
+          {renderItems()}
+        </div>
         <Button className="w-25" color="primary">
           Submit
         </Button>
