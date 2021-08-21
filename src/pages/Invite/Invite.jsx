@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 import { useForm } from 'react-hook-form';
-import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { inviteAsync } from '../../store/invitedDataSlice';
 
@@ -18,17 +17,10 @@ const Invite = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const history = useHistory();
   const dispatch = useDispatch();
 
-  const onSubmit = async (data) => {
-    console.log(data.password);
-    try {
-      dispatch(inviteAsync(data.password));
-      history.push('/profile');
-    } catch (error) {
-      console.log('something went wrong', error.message);
-    }
+  const onSubmit = (data) => {
+    dispatch(inviteAsync(data.password));
   };
 
   return (

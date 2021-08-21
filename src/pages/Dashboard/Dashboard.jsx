@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, Spinner } from 'reactstrap';
 import { Plus } from 'react-feather';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
@@ -11,6 +11,7 @@ function Dashboard() {
   const { register, handleSubmit } = useForm();
   const { user } = useSelector(selectUser);
   const [forms, setForms] = useState([{ email: 'Email', name: 'Name', id: 0 }]);
+  const [loading, setLoading] = useState(false);
 
   const ConvertObjectToArray = (obj) => {
     const arrayOfFriends = [];
@@ -25,16 +26,20 @@ function Dashboard() {
     return arrayOfFriends;
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     if (Object.values(data).includes(undefined) || Object.values(data).includes('')) {
       return alert('Seems like you have empty fields');
     }
-    console.log(data);
     const arrayOfFriends = ConvertObjectToArray(data);
     const owner = Object.assign({}, user);
     delete owner.age;
-    arrayOfFriends.push({ owner });
-    authHelper.post('/users/send', arrayOfFriends);
+    arrayOfFriends.push(owner);
+    setLoading(true);
+    const result = await authHelper.post('/users/send', arrayOfFriends);
+    setLoading(false);
+    if (result.status === 200) {
+      alert('The request was sent successfully');
+    }
   };
 
   const addFormGroup = () => {
@@ -64,6 +69,12 @@ function Dashboard() {
       </FormGroup>
     ));
   };
+
+  if (loading) {
+    return (
+      <Spinner style={{ width: '3rem', height: '3rem' }} type="grow" color="primary" />
+    );
+  }
 
   return (
     <>

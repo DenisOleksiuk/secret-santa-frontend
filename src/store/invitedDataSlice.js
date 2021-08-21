@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { inviteUser } from '../services/inviteUsers';
+import history from '../history';
 
 export const loginAsync = createAsyncThunk('auth/login', async ({ email, password }) => {
   const response = await inviteUser({ email, password });
@@ -9,9 +10,10 @@ export const loginAsync = createAsyncThunk('auth/login', async ({ email, passwor
 export const inviteAsync = createAsyncThunk('invite/user', async (data) => {
   try {
     const result = await inviteUser(data);
+    history.push('/profile');
     return result.data;
   } catch (error) {
-    console.log('Error with invite user', error.message);
+    throw new Error('You entered a wrong password');
   }
 });
 
@@ -37,9 +39,10 @@ const invitedUserSlice = createSlice({
       state.isError = false;
     });
 
-    builder.addCase(inviteAsync.rejected, (state) => {
+    builder.addCase(inviteAsync.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
+      alert(action.error.message);
     });
   },
 });

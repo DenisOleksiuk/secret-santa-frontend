@@ -9,14 +9,11 @@ import Signup from '../../pages/Signup/Signup';
 import Dashboard from '../../pages/Dashboard/Dashboard';
 import Invite from '../../pages/Invite/Invite';
 import UserProfile from '../../pages/UserProfile/UserProfile';
-import { selectInviteUserName } from '../../store/invitedDataSlice';
 
 const App = () => {
   const { isLoading, error } = useSelector(selectUser);
-  const inviteUserName = useSelector(selectInviteUserName);
   const dispatch = useDispatch();
   const isToken = window.localStorage.getItem('userData');
-  console.log(inviteUserName);
 
   useEffect(() => {
     dispatch(fetchCurrentUserAsync());
@@ -47,7 +44,7 @@ const App = () => {
             <Invite />
           </Route>
           <Route exact path="/profile">
-            <UserProfile inviteUserName={inviteUserName} />
+            <UserProfile />
           </Route>
         </Switch>
       </Container>
