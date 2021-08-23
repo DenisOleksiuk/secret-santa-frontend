@@ -78,7 +78,6 @@ function Dashboard() {
 
   return (
     <>
-      <Plus className="add-form" size={48} color="white" onClick={addFormGroup} />
       <Form className="form" onSubmit={handleSubmit(onSubmit)}>
         <div className="forms-wrapper">
           <FormGroup className="form__group">
@@ -93,6 +92,7 @@ function Dashboard() {
           Submit
         </Button>
       </Form>
+      <Plus className="add-form" size={48} color="white" onClick={addFormGroup} />
     </>
   );
 }
