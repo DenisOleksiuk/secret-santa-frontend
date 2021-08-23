@@ -19,6 +19,7 @@ export const inviteAsync = createAsyncThunk('invite/user', async (data) => {
 
 const initialState = {
   userName: null,
+  wishesOfFriends: [],
   isLoading: false,
   isError: false,
 };
@@ -34,7 +35,8 @@ const invitedUserSlice = createSlice({
     });
 
     builder.addCase(inviteAsync.fulfilled, (state, action) => {
-      state.userName = action.payload;
+      state.userName = action.payload.youAreSantaFor;
+      state.wishesOfFriends = action.payload.wishList;
       state.isLoading = false;
       state.isError = false;
     });
@@ -47,6 +49,6 @@ const invitedUserSlice = createSlice({
   },
 });
 
-export const selectInviteUserName = (state) => state.invite.userName;
+export const selectInvite = (state) => state.invite;
 
 export default invitedUserSlice.reducer;

@@ -1,0 +1,8 @@
+@import '../../index.scss';
+
+.error__route {
+  color: $message-color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

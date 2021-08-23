@@ -32,7 +32,6 @@ function Dashboard() {
     }
     const arrayOfFriends = ConvertObjectToArray(data);
     const owner = Object.assign({}, user);
-    delete owner.age;
     arrayOfFriends.push(owner);
     setLoading(true);
     const result = await authHelper.post('/users/send', arrayOfFriends);
@@ -88,11 +87,11 @@ function Dashboard() {
           </FormGroup>
           {renderItems()}
         </div>
+        <Plus className="add-form" size={48} color="white" onClick={addFormGroup} />
         <Button className="w-25" color="primary">
           Submit
         </Button>
       </Form>
-      <Plus className="add-form" size={48} color="white" onClick={addFormGroup} />
     </>
   );
 }

@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import history from '../history';
 import { authApi } from '../services/authApi';
 
 const initialState = {
@@ -18,6 +19,7 @@ export const fetchCurrentUserAsync = createAsyncThunk(
     try {
       return await authApi.getCurrentUser();
     } catch (error) {
+      history.push('/login');
       throw new Error(error.message);
     }
   }

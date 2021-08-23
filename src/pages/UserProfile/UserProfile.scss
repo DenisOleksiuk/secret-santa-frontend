@@ -1,14 +1,25 @@
+@import '../../index.scss';
+
+.userProfile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__label {
+    font-size: x-large;
+    color: beige;
+    font-weight: 700;
+    text-shadow: 5px 6px 3px black;
+  }
+}
+
 .secret-message {
   color: #f5c209;
   font-weight: 800;
   justify-content: center;
-  align-items: center;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
   text-shadow: 5px 6px 3px black;
-  font-size: 31px;
+  font-size: xxx-large;
 }
 
 .secret-name {
@@ -17,10 +28,28 @@
 }
 
 .wish-message {
-  color: #86c631;
+  color: $message-color;
   font-weight: 800;
   justify-content: center;
   align-items: center;
   text-shadow: 5px 6px 3px black;
   font-size: 31px;
+}
+
+.wish__list {
+  background-color: rgba(19, 18, 18, 0.7);
+  width: 400px;
+  margin-top: 45px;
+  padding: 15px;
+  color: #a5a5fb;
+  border-radius: 15px;
+  box-shadow: inset -3px 7px 10px 3px;
+  text-shadow: 1px 1px 2px red, 0 0 1em blue, 0 0 0.2em blue;
+  font-size: 18px;
+  font-style: oblique;
+  font-family: monospace;
+}
+
+.wish__li {
+  list-style: none;
 }

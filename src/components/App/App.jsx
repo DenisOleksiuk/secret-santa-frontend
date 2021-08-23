@@ -10,6 +10,8 @@ import Dashboard from '../../pages/Dashboard/Dashboard';
 import Invite from '../../pages/Invite/Invite';
 import UserProfile from '../../pages/UserProfile/UserProfile';
 
+import './App.scss';
+
 const App = () => {
   const { isLoading, error } = useSelector(selectUser);
   const dispatch = useDispatch();
@@ -46,6 +48,11 @@ const App = () => {
           <Route exact path="/profile">
             <UserProfile />
           </Route>
+          <Route
+            render={() => (
+              <h1 className="error__route">We can't find this url address</h1>
+            )}
+          />
         </Switch>
       </Container>
     </>
