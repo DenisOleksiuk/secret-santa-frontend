@@ -9,7 +9,6 @@ const getCurrentUser = async () => {
     const res = await apiHelper.get('/users/me', {
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log('from getCurrentUser', res);
     return res.data;
   } catch (error) {
     throw new Error(error.message);

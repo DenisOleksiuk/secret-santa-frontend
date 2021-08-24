@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Form, Input, Label, InputGroup, InputGroupAddon, Button } from 'reactstrap';
 import { useForm } from 'react-hook-form';
@@ -8,9 +8,10 @@ import './UserProfile.scss';
 import { selectUser } from '../../store/authSlice';
 
 const UserProfile = () => {
-  const { userName, wishesOfFriends } = useSelector(selectInvite);
+  const { userName, wishes } = useSelector(selectInvite);
   const { register, handleSubmit } = useForm();
   const { user } = useSelector(selectUser);
+  const [inputValue, setInputValue] = useState('');
 
   if (!userName) {
     return (
@@ -23,32 +24,21 @@ const UserProfile = () => {
   const onSubmit = async (data) => {
     data.user = user;
     data.wishes = data.wishes?.trim();
-    if (!data.wishes) {
-      data.wishes = '-';
-    }
+    if (!data.wishes) return;
+    setInputValue('');
     await apiHelper.post('/users/wish', data);
+    alert('Your wishes were sent successfully');
   };
-
   const renderWishList = () => {
-    return wishesOfFriends.map(({ wishes, name }) => {
-      wishes.join().replaceAll(',', '').replaceAll(' ', ', ');
-      return (
-        <div key={name}>
-          <span>{name} wants</span>
-          <ul>
-            {wishes.length ? (
-              wishes.map((wish) => (
-                <li key={wish} className="wish__li">
-                  {wish.replaceAll(',', '').replaceAll(' ', ', ')}
-                </li>
-              ))
-            ) : (
-              <li className="wish__li">-</li>
-            )}
-          </ul>
-        </div>
-      );
-    });
+    const wish = wishes.join('');
+    return (
+      <div>
+        <span>{userName} wants</span>
+        <ul>
+          <li className="wish__li">{wish || '-'}</li>
+        </ul>
+      </div>
+    );
   };
 
   return (
@@ -60,7 +50,13 @@ const UserProfile = () => {
       <Form className="w-50" onSubmit={handleSubmit(onSubmit)}>
         <Label className="userProfile__label">Write down your wishes</Label>
         <InputGroup>
-          <Input type="text" name="wishes" {...register('wishes')} />
+          <Input
+            value={inputValue}
+            type="text"
+            name="wishes"
+            {...register('wishes', { required: 'true' })}
+            onChange={(e) => setInputValue(e.target.value)}
+          />
           <InputGroupAddon addonType="append">
             <Button color="primary" type="submit">
               Submit
