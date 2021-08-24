@@ -17,7 +17,9 @@ export const fetchCurrentUserAsync = createAsyncThunk(
   'auth/fetchCurrentUser',
   async () => {
     try {
-      return await authApi.getCurrentUser();
+      const result = await authApi.getCurrentUser();
+      console.log('from fetchCurrentUserAsync', result);
+      return result;
     } catch (error) {
       history.push('/login');
       throw new Error(error.message);
@@ -50,6 +52,7 @@ export const authSlice = createSlice({
       })
       .addCase(fetchCurrentUserAsync.fulfilled, (state, action) => {
         state.isLoading = false;
+        console.log('from addCase', action.payload);
         state.user = action.payload;
       })
       .addCase(fetchCurrentUserAsync.rejected, (state, action) => {
