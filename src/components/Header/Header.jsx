@@ -1,10 +1,14 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { Nav, NavItem } from 'reactstrap';
+import { selectUser } from '../../store/authSlice';
+
 import './header.scss';
 
 const Header = () => {
   const location = useLocation().pathname;
+  const { user } = useSelector(selectUser);
   const signupLink = (
     <NavItem className="header__item">
       <NavLink className="header__link" to={'/signup'}>
@@ -38,7 +42,7 @@ const Header = () => {
     <header className="header">
       <Nav>
         {signupLink}
-        {loginLink}
+        {user ? null : loginLink}
       </Nav>
     </header>
   );

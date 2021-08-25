@@ -16,7 +16,7 @@ const UserProfile = () => {
   if (!userName) {
     return (
       <h1 className="wish-message">
-        Oops something went wrong and we can't get a name of your friend
+        Come back to the invite page and entered your password again
       </h1>
     );
   }
