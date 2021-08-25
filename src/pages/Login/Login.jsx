@@ -6,6 +6,8 @@ import * as yup from 'yup';
 import authHelper from '../../services/authHelper';
 import './login.scss';
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../store/authSlice';
 
 const schema = yup.object().shape({
   email: yup.string().email().required('Email is required field'),
@@ -23,10 +25,12 @@ const Login = () => {
   } = useForm({ resolver: yupResolver(schema) });
   const history = useHistory();
   const [error, setError] = useState(null);
+  const dispatch = useDispatch();
 
   const onSubmit = async (data) => {
     try {
       const user = await authHelper.post('/users/login', data);
+      dispatch(setUser(user.data.user));
       window.localStorage.setItem('userData', user.data.token);
       history.push('/dashboard');
     } catch (e) {
