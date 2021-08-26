@@ -1,6 +1,10 @@
 $message-color: #86c631;
 
 body {
+  background-color: #ea3737;
+}
+
+#root {
   height: 100vh;
   background: url('./images/secret-santa.jpg') no-repeat (center / cover);
 }

@@ -1,12 +1,29 @@
 .form__group {
+  position: relative;
   background-color: rgba(255, 255, 255, 0.5);
   border-radius: 15px;
   margin-top: 15px;
+  padding: 5px;
   width: calc(50% - 10px) !important;
   margin-left: 10px;
   &:nth-of-type(1),
   &:nth-of-type(2) {
     margin-top: 0px;
+  }
+
+  &-close {
+    color: aliceblue;
+    position: absolute;
+    right: 5px;
+    cursor: pointer;
+  }
+
+  &-alert {
+    margin-top: 25px;
+    text-align: center;
+    opacity: 0.8;
+    font-weight: bold;
+    font-size: 20px;
   }
 }
 
@@ -18,8 +35,6 @@
 
 .forms-wrapper {
   width: 100%;
-  overflow-y: auto;
-  height: 300px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;

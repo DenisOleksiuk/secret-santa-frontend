@@ -1,22 +1,31 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { NavLink, useHistory, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { Nav, NavItem } from 'reactstrap';
-import { selectUser } from '../../store/authSlice';
+import { selectUser, setUser } from '../../store/authSlice';
 
 import './header.scss';
 
 const Header = () => {
   const location = useLocation().pathname;
   const { user } = useSelector(selectUser);
-  const signupLink = (
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const logoutHandler = () => {
+    dispatch(setUser(null));
+    window.localStorage.setItem('userData', null);
+    history.push('/login');
+  };
+
+  const signup = (
     <NavItem className="header__item">
       <NavLink className="header__link" to={'/signup'}>
         Sign up
       </NavLink>
     </NavItem>
   );
-  const loginLink = (
+  const login = (
     <NavItem className="header__item">
       <NavLink className="header__link" to={'/login'}>
         Sign in
@@ -24,16 +33,29 @@ const Header = () => {
     </NavItem>
   );
 
+  const logout = (
+    <NavItem className="header__item">
+      <NavLink className="header__link" to={'/login'} onClick={logoutHandler}>
+        Log out
+      </NavLink>
+    </NavItem>
+  );
+
+  const logoutOrLogin = user ? logout : login;
+
   if (location === '/login') {
     return (
       <header className="header">
-        <Nav>{signupLink}</Nav>
+        <Nav>
+          {user ? logout : null}
+          {signup}
+        </Nav>
       </header>
     );
   } else if (location === '/signup') {
     return (
       <header className="header">
-        <Nav>{loginLink}</Nav>
+        <Nav>{logoutOrLogin}</Nav>
       </header>
     );
   }
@@ -41,8 +63,8 @@ const Header = () => {
   return (
     <header className="header">
       <Nav>
-        {signupLink}
-        {user ? null : loginLink}
+        {logoutOrLogin}
+        {signup}
       </Nav>
     </header>
   );

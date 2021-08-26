@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { Button, Form, FormGroup, Label, Input, Spinner } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import { Plus } from 'react-feather';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
+import { X } from 'react-feather';
 import authHelper from '../../services/authHelper';
 import './dashboard.scss';
 import { selectUser } from '../../store/authSlice';
 
 function Dashboard() {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, unregister } = useForm();
   const { user } = useSelector(selectUser);
   const [forms, setForms] = useState([{ email: 'Email', name: 'Name', id: 0 }]);
   const [loading, setLoading] = useState(false);
@@ -30,6 +31,7 @@ function Dashboard() {
     if (Object.values(data).includes(undefined) || Object.values(data).includes('')) {
       return alert('Seems like you have empty fields');
     }
+
     const arrayOfFriends = ConvertObjectToArray(data);
     const owner = Object.assign({}, user);
     arrayOfFriends.push(owner);
@@ -48,10 +50,19 @@ function Dashboard() {
     ]);
   };
 
+  const deleteFormGroup = (item) => {
+    unregister(`email-${item.id}`);
+    unregister(`name-${item.id}`);
+    setForms((state) => {
+      return state.length > 1 ? state.filter((form) => form.id !== item.id) : state;
+    });
+  };
+
   const renderItems = () => {
     return forms.map((item) => (
       <FormGroup key={item.id} className="form__group">
         <Label className="form__label">{item.email}</Label>
+        <X className="form__group-close" onClick={() => deleteFormGroup(item)} />
         <Input
           type="email"
           name="email"
@@ -71,7 +82,9 @@ function Dashboard() {
 
   if (loading) {
     return (
-      <Spinner style={{ width: '3rem', height: '3rem' }} type="grow" color="primary" />
+      <Alert color="primary" className="form__group-alert">
+        Wait a bit for submitting the form!
+      </Alert>
     );
   }
 
