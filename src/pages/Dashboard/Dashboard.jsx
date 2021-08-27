@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 import { X } from 'react-feather';
 import { useHistory } from 'react-router-dom';
-import authHelper from '../../services/authHelper';
+import apiHelper from '../../services/authHelper';
 import { selectUser, setUser } from '../../store/authSlice';
 
 import './dashboard.scss';
@@ -54,8 +54,8 @@ function Dashboard() {
 
     setLoading(true);
     try {
-      const owner = await authHelper.post('/users/send', arrayOfFriends);
-      const changedOwner = await authHelper.patch('/users/send', owner.data);
+      const owner = await apiHelper.post('/users/send', arrayOfFriends);
+      const changedOwner = await apiHelper.patch('/users/send', owner.data);
       dispatch(setUser(changedOwner.data));
       setLoading(false);
 

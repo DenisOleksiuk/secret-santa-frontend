@@ -31,7 +31,7 @@ const Login = () => {
       const user = await authHelper.post('/users/login', data);
       dispatch(setUser(user.data.user));
       window.localStorage.setItem('userData', user.data.token);
-      window.location.href = process.env.REACT_APP_URL;
+      window.location.href = process.env.REACT_APP_BASE_URL;
     } catch (e) {
       setError(e.message);
     }
