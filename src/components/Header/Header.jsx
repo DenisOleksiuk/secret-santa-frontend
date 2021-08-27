@@ -41,31 +41,23 @@ const Header = () => {
     </NavItem>
   );
 
-  const logoutOrLogin = user ? logout : login;
-
   if (location === '/login') {
     return (
       <header className="header">
-        <Nav>
-          {user ? logout : null}
-          {signup}
-        </Nav>
+        <Nav>{signup}</Nav>
       </header>
     );
   } else if (location === '/signup') {
     return (
       <header className="header">
-        <Nav>{logoutOrLogin}</Nav>
+        <Nav>{login}</Nav>
       </header>
     );
   }
 
   return (
     <header className="header">
-      <Nav>
-        {logoutOrLogin}
-        {signup}
-      </Nav>
+      <Nav>{user ? logout : login}</Nav>
     </header>
   );
 };

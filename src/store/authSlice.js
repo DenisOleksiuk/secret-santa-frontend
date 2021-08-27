@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import history from '../history';
 import { authApi } from '../services/authApi';
+import { getReceiverWishlist } from '../services/inviteUsers';
 
 const initialState = {
   user: null,
@@ -24,6 +25,15 @@ export const fetchCurrentUserAsync = createAsyncThunk(
     }
   }
 );
+
+export const invitedUserAsync = createAsyncThunk('invite/invited', async (data) => {
+  try {
+    const receiverWishlist = await getReceiverWishlist(data);
+    return receiverWishlist.data;
+  } catch (error) {
+    throw new Error('User was not found');
+  }
+});
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -55,6 +65,15 @@ export const authSlice = createSlice({
       .addCase(fetchCurrentUserAsync.rejected, (state, action) => {
         state.error = action.error.message;
         state.isLoading = false;
+      })
+      .addCase(invitedUserAsync.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+      })
+      .addCase(invitedUserAsync.fulfilled, (state, action) => {
+        state.user.receiver.wishes = action.payload;
+        state.isLoading = false;
+        state.isError = false;
       });
   },
 });

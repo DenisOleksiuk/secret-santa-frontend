@@ -32,7 +32,7 @@ const Signup = () => {
     try {
       const user = await authHelper.post('/users', data);
       window.localStorage.setItem('userData', user.data.token);
-      dispatch(setUser({ email: data.email, name: data.name }));
+      dispatch(setUser(user.data.user));
       history.push('/dashboard');
     } catch (error) {
       setError(error.message);
@@ -83,7 +83,7 @@ const Signup = () => {
           </FormGroup>
         </Col>
       </Row>
-      <p>{error}</p>
+      <p>{error && 'User with such email has already exist'}</p>
 
       <Button className="w-25" color="primary">
         Submit

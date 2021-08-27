@@ -28,25 +28,7 @@ const invitedUserSlice = createSlice({
   name: 'invite',
   initialState,
   reducers: {},
-  extraReducers: (builder) => {
-    builder.addCase(inviteAsync.pending, (state) => {
-      state.isLoading = true;
-      state.isError = false;
-    });
-
-    builder.addCase(inviteAsync.fulfilled, (state, action) => {
-      state.userName = action.payload.youAreSantaFor;
-      state.wishes = action.payload.wishList;
-      state.isLoading = false;
-      state.isError = false;
-    });
-
-    builder.addCase(inviteAsync.rejected, (state, action) => {
-      state.isLoading = false;
-      state.isError = true;
-      alert(action.error.message);
-    });
-  },
+  extraReducers: (builder) => {},
 });
 
 export const selectInvite = (state) => state.invite;

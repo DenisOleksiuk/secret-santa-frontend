@@ -2,17 +2,21 @@ import React, { useState } from 'react';
 import { Button, Form, FormGroup, Label, Input, Alert } from 'reactstrap';
 import { Plus } from 'react-feather';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { X } from 'react-feather';
+import { useHistory } from 'react-router-dom';
 import authHelper from '../../services/authHelper';
+import { selectUser, setUser } from '../../store/authSlice';
+
 import './dashboard.scss';
-import { selectUser } from '../../store/authSlice';
 
 function Dashboard() {
   const { register, handleSubmit, unregister } = useForm();
   const { user } = useSelector(selectUser);
+  const dispatch = useDispatch();
   const [forms, setForms] = useState([{ email: 'Email', name: 'Name', id: 0 }]);
   const [loading, setLoading] = useState(false);
+  const history = useHistory();
 
   const ConvertObjectToArray = (obj) => {
     const arrayOfFriends = [];
@@ -27,19 +31,41 @@ function Dashboard() {
     return arrayOfFriends;
   };
 
+  const validationForIdenticalMails = (friends) => {
+    const emails = friends.map((friend) => friend.email);
+    return new Set(emails).size === friends.length;
+  };
+
+  const validationForUndefinedOrEmptyStrings = (data) => {
+    return Object.values(data).includes(undefined) || Object.values(data).includes('');
+  };
+
   const onSubmit = async (data) => {
-    if (Object.values(data).includes(undefined) || Object.values(data).includes('')) {
+    if (validationForUndefinedOrEmptyStrings(data)) {
       return alert('Seems like you have empty fields');
     }
 
     const arrayOfFriends = ConvertObjectToArray(data);
-    const owner = Object.assign({}, user);
-    arrayOfFriends.push(owner);
+    arrayOfFriends.push({ ...user, owner: true });
+
+    if (!validationForIdenticalMails(arrayOfFriends)) {
+      return alert('Seems like you entered identical emails!');
+    }
+
     setLoading(true);
-    const result = await authHelper.post('/users/send', arrayOfFriends);
-    setLoading(false);
-    if (result.status === 200) {
-      alert('The request was sent successfully');
+    try {
+      const owner = await authHelper.post('/users/send', arrayOfFriends);
+      const changedOwner = await authHelper.patch('/users/send', owner.data);
+      dispatch(setUser(changedOwner.data));
+      setLoading(false);
+
+      if (owner.status !== 200 && changedOwner.status !== 200) {
+        throw new Error('The request was not sent successfully');
+      }
+
+      history.push('/profile');
+    } catch (error) {
+      alert('Something went wrong!');
     }
   };
 

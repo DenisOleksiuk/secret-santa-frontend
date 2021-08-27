@@ -13,7 +13,7 @@ import UserProfile from '../../pages/UserProfile/UserProfile';
 import './App.scss';
 
 const App = () => {
-  const { isLoading, error } = useSelector(selectUser);
+  const { isLoading, error, user } = useSelector(selectUser);
   const dispatch = useDispatch();
   const isToken = window.localStorage.getItem('userData');
 
@@ -31,7 +31,11 @@ const App = () => {
       <Container>
         <Switch>
           <Route exact path="/">
-            {isToken && !error ? <Redirect to="/dashboard" /> : <Redirect to="/login" />}
+            {isToken && !error ? (
+              <Redirect to={user?.friendsFormWasSubmitted ? '/profile' : '/dashboard'} />
+            ) : (
+              <Redirect to="/login" />
+            )}
           </Route>
           <Route exact path="/login">
             <Login />
