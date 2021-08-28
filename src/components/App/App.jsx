@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Container, Spinner } from 'reactstrap';
+import { Container } from 'reactstrap';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser, fetchCurrentUserAsync } from '../../store/authSlice';
@@ -9,6 +9,7 @@ import Signup from '../../pages/Signup/Signup';
 import Dashboard from '../../pages/Dashboard/Dashboard';
 import Invite from '../../pages/Invite/Invite';
 import UserProfile from '../../pages/UserProfile/UserProfile';
+import Spinner from '../Spinner/Spinner';
 
 import './App.scss';
 
@@ -22,7 +23,7 @@ const App = () => {
   }, [dispatch]);
 
   if (isLoading) {
-    return <Spinner color="primary" />;
+    return <Spinner />;
   }
 
   return (

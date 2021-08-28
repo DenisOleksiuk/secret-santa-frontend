@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { Plus, X } from 'react-feather';
 import apiHelper from '../../services/authHelper';
 import { selectUser, setUser } from '../../store/authSlice';
+import Spinner from '../../components/Spinner/Spinner';
 
 import './UserProfile.scss';
 
@@ -14,6 +15,7 @@ const UserProfile = () => {
   const dispatch = useDispatch();
   const [receiverWishes, setReceiverWishes] = useState([]);
   const [receiverError, setReceiverError] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     apiHelper.get(`/users/receiver/${user.receiver.email}`).then(({ data }) => {
@@ -29,7 +31,9 @@ const UserProfile = () => {
     try {
       e.target.reset();
       reset();
+      setLoading(true);
       const newUser = await apiHelper.post('/users/add/wish', data);
+      setLoading(false);
       dispatch(setUser(newUser.data));
       setReceiverError(null);
     } catch (error) {
@@ -38,14 +42,16 @@ const UserProfile = () => {
   };
 
   const deleteWish = async (id) => {
+    setLoading(true);
     const newUser = await apiHelper.post(`/users/delete/wish/${id}`, user);
+    setLoading(false);
     dispatch(setUser(newUser.data));
   };
 
   const renderWishList = (wishlist, owner = false) => {
     return (
       <div>
-        <span>{owner ? 'You' : user.receiver.name} wants</span>
+        <span>{owner ? 'You want' : `${user.receiver.name} wants`}</span>
         <ul>
           {wishlist.length ? (
             wishlist.map((wish) => {
@@ -87,7 +93,9 @@ const UserProfile = () => {
         </InputGroup>
         <p>{receiverError}</p>
       </Form>
-      <div className="owner__wish-list">{renderWishList(user.wishes, true)}</div>
+      <div className="owner__wish-list">
+        {loading ? <Spinner /> : renderWishList(user.wishes, true)}
+      </div>
       <div className="wish__list">{renderWishList(receiverWishes)}</div>
     </div>
   );
